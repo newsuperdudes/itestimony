@@ -2035,6 +2035,51 @@
       await Promise.all(promises);
     })();
 
+    // ── Additional Specific Assets (Hostess, Identity, etc.) ──
+    (async function() {
+      const SUPABASE_URL = 'https://ihlyzizdnecykfqslxge.supabase.co';
+      const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlobHl6aXpkbmVjeWtmcXNseGdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxODgyNzIsImV4cCI6MjA3Mjc2NDI3Mn0.d8ZUEqFKAOqbZQVPloZGN-WCggjlLDGsmEpIgSu-e_I';
+
+      // Map Supabase key -> CSS Selector
+      const assetMap = {
+        'sd_asset_hostess': '#s9b .loc-carousel img',
+        'sd_asset_identity1': '#s21b .loc-carousel img:nth-of-type(1)',
+        'sd_asset_identity2': '#s21b .loc-carousel img:nth-of-type(2)',
+        'sd_asset_identity3': '#s21b .loc-carousel img:nth-of-type(3)',
+        'sd_asset_real_theatre': '#s15 img',
+        'sd_asset_cigar_room': '#s22cigar img',
+        'sd_asset_naos1': '#s22a .loc-carousel img:nth-of-type(1)',
+        'sd_asset_naos2': '#s22a .loc-carousel img:nth-of-type(2)',
+        'sd_asset_naos3': '#s22a .loc-carousel img:nth-of-type(3)',
+        'sd_asset_catering0': '#s26 .loc-carousel img:nth-of-type(1)',
+        'sd_asset_catering1': '#s26 .loc-carousel img:nth-of-type(2)',
+        'sd_asset_catering2': '#s26 .loc-carousel img:nth-of-type(3)',
+        'sd_asset_wine': '#s27 img',
+        'sd_asset_dige': '#s28 img'
+      };
+
+      const keys = Object.keys(assetMap).join(',');
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/assets?key=in.(${keys})&select=key,value`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await res.json();
+        data.forEach(item => {
+          const sel = assetMap[item.key];
+          if (sel) {
+            const el = document.querySelector(sel);
+            if (el) el.src = item.value;
+          }
+        });
+      } catch (e) {
+        console.error('Error fetching specific assets', e);
+      }
+    })();
+
     // ── Location Carousels ──
     document.querySelectorAll('.loc-carousel').forEach(container => {
       let cur = 0;
