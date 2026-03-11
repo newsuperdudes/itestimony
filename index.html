@@ -678,6 +678,43 @@
 </head>
 <body>
 
+  <!-- PASSWORD PROTECTION -->
+  <div id="password-overlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#050505;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--white);">
+    <div style="max-width:400px;width:100%;padding:40px;border:1px solid var(--w10);background:#0a0a0a;text-align:center;">
+      <h2 style="font-size:12px;letter-spacing:0.8em;text-transform:uppercase;margin-bottom:24px;color:var(--white);">Restricted Access</h2>
+      <input type="password" id="pass-input" placeholder="DECRYPTION KEY" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.05);border:1px solid var(--w10);padding:16px;color:var(--white);font-size:10px;letter-spacing:0.5em;text-transform:uppercase;outline:none;text-align:center;margin-bottom:24px;font-family:inherit;">
+      <button id="pass-submit" style="background:var(--white);color:#000;padding:12px 32px;font-size:10px;letter-spacing:0.4em;text-transform:uppercase;border:none;cursor:pointer;font-weight:bold;font-family:inherit;transition:all 0.3s;">Authorize</button>
+      <p id="pass-error" style="color:#ef4444;font-size:9px;text-transform:uppercase;letter-spacing:0.2em;margin-top:16px;display:none;font-weight:700;">Invalid Key</p>
+    </div>
+  </div>
+  <script>
+    (function() {
+      const overlay = document.getElementById('password-overlay');
+      const input = document.getElementById('pass-input');
+      const btn = document.getElementById('pass-submit');
+      const error = document.getElementById('pass-error');
+      
+      const checkPass = () => {
+        if (input.value === 'thebestagencyever') {
+          sessionStorage.setItem('sd_pres_auth', 'true');
+          overlay.style.display = 'none';
+        } else {
+          error.style.display = 'block';
+          input.value = '';
+        }
+      };
+
+      if (sessionStorage.getItem('sd_pres_auth') === 'true') {
+        overlay.style.display = 'none';
+      } else {
+        btn.addEventListener('click', checkPass);
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') checkPass();
+        });
+      }
+    })();
+  </script>
+
   <div id="preloader"><div class="loader-text">Loading</div></div>
 
   <div id="prog"><div id="prog-fill"></div><span id="prog-lbl">Scroll</span></div>
