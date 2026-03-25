@@ -17,3 +17,16 @@ jobs:
           server-dir: /public_html/itestimony/
           local-dir: ./
           dangerous-clean-slate: false
+      - name: Prepare ilclub
+        run: |
+          mkdir -p /tmp/ilclub
+          cp index_copy.html /tmp/ilclub/index.html
+      - name: Deploy ilclub to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /public_html/ilclub/
+          local-dir: /tmp/ilclub/
+          dangerous-clean-slate: false
